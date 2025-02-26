@@ -1,0 +1,36 @@
+{
+  "serverAddress": "mallulifesteal.fun",
+  "port": 25565,
+  "version": "1.20.1",
+  "whitelist": ["__Lnzz__", "hollowkight", "Susdog","SusPoocha"],
+  "commandPassword": "poocha",
+  "accounts": [
+    {
+      "username": "__Lnzz__",
+      "password": "poocha"
+    },
+    {
+      "username": "hollowkight",
+      "password": "poocha"
+    },    {
+      "username": "Susdog",
+      "password": "811392"
+    }
+  ],
+  "farms": [
+    {
+      "name": "Gold Farm",
+      "bots": ["Susdog"],
+      "duties": {
+        "Susdog": ["hitPiglin","jump"]
+      }
+    },
+    {
+      "name": "Skull Farm",
+      "bots": ["__Lnzz__"],
+      "duties": {
+        "__Lnzz__": ["jump"]
+      }
+    }
+  ]
+}
