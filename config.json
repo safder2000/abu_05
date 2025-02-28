@@ -14,15 +14,15 @@
       "password": "poocha"
     },    {
       "username": "Susdog",
-      "password": "811392"
+      "password": "poocha"
     }
   ],
   "farms": [
     {
       "name": "Gold Farm",
-      "bots": ["Susdog"],
+      "bots": ["__Lnzz__"],
       "duties": {
-        "Susdog": ["hitPiglin","jump"]
+        "__Lnzz__": ["hitPiglin"]
       }
     },
     {
