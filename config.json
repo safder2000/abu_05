@@ -3,10 +3,30 @@
   "port": 25565,
   "version": "1.20.1",
   "whitelist": ["__Lnzz__", "hollowkight", "Susdog","SusPoocha"],
-  "commandPassword": "poocha",
+  "commandPassword": "malare",
   "accounts": [
     {
+      "username": "Sibin1",
+      "password": "poocha"
+    },
+    {
+      "username": "Doc",
+      "password": "poocha"
+    },
+    {
       "username": "__Lnzz__",
+      "password": "poocha"
+    },
+    {
+      "username": "Jude",
+      "password": "poocha"
+    },
+    {
+      "username": "Jack",
+      "password": "poocha"
+    },
+    {
+      "username": "iDakaii",
       "password": "poocha"
     },
     {
@@ -20,16 +40,39 @@
   "farms": [
     {
       "name": "Gold Farm",
-      "bots": ["__Lnzz__"],
+      "bots": ["Susdog"],
       "duties": {
-        "__Lnzz__": ["hitPiglin"]
+        "Susdog": ["hitPiglin","jump"]
       }
     },
     {
       "name": "Skull Farm",
-      "bots": ["__Lnzz__"],
+      "bots": ["iDakaii","hollowkight"],
       "duties": {
-        "__Lnzz__": ["jump"]
+        "iDakaii": [],
+        "hollowkight": ["hitWitherSkeleton"]
+      }
+    },
+    {
+      "name": "Ghast Farm",
+      "bots": ["Jack","Jude"],
+      "duties": {
+        "Jack": ["hitWitherSkeleton"],
+        "Jude": []
+      }
+    },
+    {
+      "name": "Iron Farm",
+      "bots": ["Sibin1"],
+      "duties": {
+        "Sibin1": []
+      }
+    },
+    {
+      "name": "Pillager Farm",
+      "bots": ["Doc"],
+      "duties": {
+        "Doc": []
       }
     }
   ]

@@ -1,5 +1,8 @@
+const CacheManager = require('../core/CacheManager');
+
 class FarmManager {
   constructor(config, selectedFarms) {
+    this.cacheManager = new CacheManager();
     this.config = config;
     this.selectedFarms = selectedFarms;
   }
@@ -10,6 +13,10 @@ class FarmManager {
         console.log(`No duties assigned for ${bot.username} on ${selectedFarm ? selectedFarm.name : 'any farm'}.`);
         continue;
       }
+
+      // Update cache with farm assignment
+      this.cacheManager.updateBot(bot.username, { farm: selectedFarm.name });
+
 
       const duties = selectedFarm.duties[bot.username];
       console.log(`Assigning duties to ${bot.username} on farm ${selectedFarm.name}: ${duties.join(', ')}`);
@@ -24,12 +31,37 @@ class FarmManager {
           this.jump(bot);
           break;
         case 'hitPiglin':
-          this.hitPiglin(bot, farmName); // Pass farm name
+          this.hitPiglin(bot, farmName);
+          break;
+        case 'hitWitherSkeleton':
+          this.hitWitherSkeleton(bot);
+          break;
+        case 'hitGhast':
+          this.hitGhast(bot);
           break;
         default:
           console.log(`Unknown duty: ${duty}`);
       }
     });
+  }
+
+  hitGhast(bot) {
+    console.log(`[${bot.username}] Starting hitGhast duty`);
+    setInterval(() => {
+      const ghast = bot.nearestEntity(entity => entity.name === 'ghast');
+      if (ghast) {
+        // Check for best weapon (assuming sword is best)
+        const sword = bot.inventory.items().find(item => item.name.includes('netherite_sword') || item.name.includes('diamond_sword'));
+
+        if (sword) {
+          bot.equip(sword, 'hand');
+          bot.attack(ghast);
+          console.log(`[${bot.username}] Attacking ghast with ${sword.name}`);
+        } else {
+          console.log(`[${bot.username}] No Netherite or Diamond sword found`);
+        }
+      }
+    }, 2000);
   }
 
   jump(bot) {
@@ -41,6 +73,25 @@ class FarmManager {
       }, 100);
     }, Math.random() * 2000 + 2000); // Random interval between 2 and 4 seconds
   }
+
+    hitWitherSkeleton(bot) {
+      console.log(`[${bot.username}] Starting hitWitherSkeleton duty`);
+      setInterval(() => {
+        const witherSkeleton = bot.nearestEntity(entity => entity.name === 'wither_skeleton');
+        if (witherSkeleton) {
+          // Check for Netherite or Diamond sword
+          const sword = bot.inventory.items().find(item => item.name.includes('netherite_sword') || item.name.includes('diamond_sword'));
+
+          if (sword) {
+            bot.equip(sword, 'hand'); // Equip the sword
+            bot.attack(witherSkeleton);
+            console.log(`[${bot.username}] Attacking wither skeleton with ${sword.name}`);
+          } else {
+            console.log(`[${bot.username}] No Netherite or Diamond sword found`);
+          }
+        }
+      }, 2000);
+    }
 
   hitPiglin(bot, farmName) { // Receive farm name
     console.log(`[${bot.username}] Starting hitPiglin duty`);

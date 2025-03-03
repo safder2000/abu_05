@@ -1,11 +1,14 @@
 const fs = require('fs');
 const readline = require('readline');
 const ConnectionManager = require('./core/ConnectionManager');
+const CacheManager = require('./core/CacheManager');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+const cacheManager = new CacheManager();
 
 // Promise wrapper for readline question
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
@@ -68,11 +71,25 @@ async function startBots() {
     // Read existing config
     let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
-    // Ask for server details
-    //console.log('\n=== Server Configuration ===');
-    //config.serverAddress = await question('Enter server address (press Enter for default: mallulifesteal.fun): ') || config.serverAddress;
-    //config.port = parseInt(await question('Enter server port (press Enter for default: 25565): ')) || config.port;
-    //config.version = await question('Enter Minecraft version (press Enter for default: 1.20.1): ') || config.version;
+    // Reconnect bots from cache
+    console.log('\n=== Reconnecting Bots from Cache ===');
+    const cachedBots = cacheManager.cache.bots;
+    for (const botData of cachedBots) {
+      if (botData.state === 'running') {
+        console.log(`Reconnecting bot ${botData.username}...`);
+        const connectionManager = new ConnectionManager({
+          host: botData.serverAddress,
+          port: config.port, // Assuming port is stored in config.json
+          version: config.version, // Assuming version is stored in config.json
+          username: botData.username,
+          authMethod: botData.authMethod,
+          farms: botData.farm ? [config.farms.find(farm => farm.name === botData.farm)] : [] // Find farm object by name
+        });
+        connectionManager.connect();
+        // Wait for 5 seconds before starting the next bot to prevent server overload
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
 
     // Main Menu
     console.log('\n=== Main Menu ===');

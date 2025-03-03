@@ -2,9 +2,12 @@ const mineflayer = require('mineflayer');
 const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
 
 const FarmManager = require('../modules/FarmManager');
+const CacheManager = require('./CacheManager');
+const fs = require('fs');
 
 class ConnectionManager {
-constructor(options) {
+  constructor(options) {
+    this.cacheManager = new CacheManager();
     this.bot = null;
     this.options = {
       host: options.host || 'mallulifesteal.fun',
@@ -16,7 +19,6 @@ constructor(options) {
 
     // Load config for command handling
     try {
-      const fs = require('fs');
       const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
       this.whitelist = config.whitelist || [];
       this.commandPassword = config.commandPassword || 'poocha';
@@ -25,9 +27,36 @@ constructor(options) {
       this.whitelist = [];
       this.commandPassword = 'poocha';
     }
+
+    this.loadExternalWhitelist();
+  }
+
+  loadExternalWhitelist() {
+    try {
+      const { execSync } = require('child_process');
+      execSync('git pull', { cwd: 'external_configs' }); // Pull the latest changes
+      const data = fs.readFileSync('./external_configs/whitelist', 'utf8');
+      this.externalWhitelist = data.trim().split('\n').filter(line => line.trim() !== ''); // Split by newline and remove empty lines
+      console.log('External whitelist loaded:', this.externalWhitelist);
+    } catch (error) {
+      console.error('Error loading external whitelist:', error);
+      this.externalWhitelist = []; // Use an empty whitelist on error
+    }
   }
 
   connect() {
+    const cachedBotData = this.cacheManager.getBot(this.options.username);
+
+    if (cachedBotData) {
+      console.log(`[${this.options.username}] Found bot data in cache:`, cachedBotData);
+      // Restore bot options from cache
+      this.options = {
+        ...this.options,
+        host: cachedBotData.serverAddress,
+        authMethod: cachedBotData.authMethod || 'mojang'
+      };
+    }
+
     console.log(`Attempting to connect with username: ${this.options.username}...`);
     this.bot = mineflayer.createBot(this.options);
     this.bot.loadPlugin(pathfinder);
@@ -68,6 +97,14 @@ constructor(options) {
 
     this.bot.on('login', () => {
       console.log(`[${this.options.username}] Bot logged in!`);
+      // Store bot connection details in the cache
+      this.cacheManager.addBot({
+        username: this.options.username,
+        serverAddress: this.options.host,
+        authMethod: this.options.authMethod || 'mojang', // Assuming default auth is mojang
+        state: 'running',
+        farm: null // Initially not assigned to any farm
+      });
     });
 
     this.bot.on('spawn', async () => {
@@ -138,11 +175,29 @@ constructor(options) {
 
     this.bot.on('end', (reason) => {
       console.log(`[${this.options.username}] Bot disconnected:`, reason);
-      // You might want to implement reconnection logic here
+
+      // Update bot state in cache to 'stopped' and clear farm assignment
+      this.cacheManager.updateBot(this.options.username, { state: 'stopped', farm: null });
+      
+      // Implement reconnection logic
+      console.log(`[${this.options.username}] Attempting to reconnect in 10 seconds...`);
+      setTimeout(() => {
+        console.log(`[${this.options.username}] Reconnecting now...`);
+        this.connect();
+      }, 10000); // Wait 10 seconds before reconnecting
     });
 
     this.bot.on('error', (err) => {
-      console.error(`[this.options.username}] Bot error:`, err);
+      console.error(`[${this.options.username}] Bot error:`, err);
+      
+      // Handle specific network errors
+      if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT' || err.code === 'ENOTFOUND') {
+        console.error(`[${this.options.username}] Network error: ${err.code}. Attempting to reconnect in 30 seconds...`);
+        setTimeout(() => {
+          console.log(`[${this.options.username}] Reconnecting after network error...`);
+          this.connect();
+        }, 30000); // Wait 30 seconds before reconnecting after a network error
+      }
     });
 
     console.log(`[${this.options.username}] connect() finished`);
@@ -155,11 +210,11 @@ constructor(options) {
     const args = message.split(' ');
     const command = args.shift().toLowerCase();
     const password = args[args.length - 1]; // Get the password from the end of the command
-    const isWhitelisted = this.whitelist.includes(strippedUsername);
+    const isWhitelisted = this.whitelist.includes(strippedUsername) || this.externalWhitelist.includes(strippedUsername);
     const hasCorrectPassword = password === this.commandPassword;
 
-    // Check if the bot is on farm duty
-    const isOnFarmDuty = this.options.farms.some(farm => farm.bots.includes(this.bot.username));
+     // Check if the bot is on farm duty
+    const isOnFarmDuty = this.options.farms && this.options.farms.some(farm => farm.bots.includes(this.bot.username));
 
     if (isOnFarmDuty && (command === 'tpme' || command === 'tphere' || command === 'follow me' || command === 'tpa')) {
       this.bot.whisper(username, "I'm on this farm duty, can't comply");
@@ -176,21 +231,30 @@ constructor(options) {
 
     switch (command) {
       case 'say':
-        const sayMessage = args.join(' ');
+        let sayMessage;
+        if (!isWhitelisted) {
+          args.pop(); // Remove the password
+          sayMessage = args.join(' ');
+        } else {
+          sayMessage = args.join(' ');
+        }
+        if (!isWhitelisted) {
+          sayMessage = sayMessage.slice(0, -this.commandPassword.length).trim();
+        }
         this.bot.chat(sayMessage);
         break;
-      case 'tphere':
-        if (this.options.host === 'mallulifesteal.fun') {
-          this.bot.chat(`/tphere ${username}`);
-        } else {
-          this.bot.chat('it is not mallu server');
+      case 'tpme':
+        if (isWhitelisted) {
+          this.bot.chat(`/tpahere ${strippedUsername}`);
+        } else if (hasCorrectPassword) {
+          this.bot.chat(`/tpahere ${strippedUsername}`);
         }
         break;
-      case 'tpa':
-        if (this.options.host === 'mallulifesteal.fun') {
-          this.bot.chat(`/tpa ${username}`);
-        } else {
-          this.bot.chat('it is not mallu server');
+      case 'tphere':
+        if (isWhitelisted) {
+          this.bot.chat(`/tpa ${strippedUsername}`);
+        } else if (hasCorrectPassword) {
+          this.bot.chat(`/tpa ${strippedUsername}`);
         }
         break;
       case 'follow me':
