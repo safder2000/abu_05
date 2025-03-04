@@ -2,7 +2,7 @@
   "serverAddress": "mallulifesteal.fun",
   "port": 25565,
   "version": "1.20.1",
-  "whitelist": ["__Lnzz__", "hollowkight", "Susdog","SusPoocha"],
+  "whitelist": ["__Lnzz__", "hollowknight", "Susdog","SusPoocha"],
   "commandPassword": "malare",
   "accounts": [
     {
@@ -30,7 +30,7 @@
       "password": "poocha"
     },
     {
-      "username": "hollowkight",
+      "username": "hollowknight",
       "password": "poocha"
     },    {
       "username": "Susdog",
@@ -47,10 +47,10 @@
     },
     {
       "name": "Skull Farm",
-      "bots": ["iDakaii","hollowkight"],
+      "bots": ["iDakaii","hollowknight"],
       "duties": {
         "iDakaii": [],
-        "hollowkight": ["hitWitherSkeleton"]
+        "hollowknight": ["hitWitherSkeleton"]
       }
     },
     {
