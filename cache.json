@@ -1,0 +1,12 @@
+{
+  "bots": [
+    {
+      "username": "mac_zx",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "state": "running",
+      "farm": null
+    }
+  ],
+  "farms": []
+}

@@ -113,6 +113,8 @@ class ConnectionManager {
 
     this.bot.on('login', () => {
       this.logMessage('system', 'Bot logged in!');
+      // Send the login command
+      this.bot.chat(`/login ${this.options.password}`);
       // Store bot connection details in the cache
       this.cacheManager.addBot({
         username: this.options.username,

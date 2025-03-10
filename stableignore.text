@@ -1,0 +1,8 @@
+node_modules
+memory-bank
+core
+.git
+.gitignore
+.env
+*.log
+*.lock

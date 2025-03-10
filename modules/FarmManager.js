@@ -121,9 +121,9 @@ class FarmManager {
         console.log(`[${bot.username}] No Netherite or Diamond sword found`);
       }
 
-      const raidEntities = bot.getEntities({
-        maxDistance: 16, // Adjust radius as needed
-        filter: entity => entity.name === 'pillager' || entity.name === 'vindicator' || entity.name === 'evoker' || entity.name === 'witch' || entity.name === 'ravager' //Added ravager
+      const raidEntities = Object.values(bot.entities).filter(entity => {
+        const distance = bot.entity.position.distanceTo(entity.position);
+        return (distance <= 16) && (entity.name === 'pillager' || entity.name === 'vindicator' || entity.name === 'evoker' || entity.name === 'witch' || entity.name === 'ravager');
       });
 
       raidEntities.forEach(entity => {
