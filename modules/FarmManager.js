@@ -39,6 +39,9 @@ class FarmManager {
         case 'hitGhast':
           this.hitGhast(bot);
           break;
+        case 'raidfarm':
+            this.raidFarmKilling(bot);
+            break;
         default:
           console.log(`Unknown duty: ${duty}`);
       }
@@ -90,7 +93,7 @@ class FarmManager {
             console.log(`[${bot.username}] No Netherite or Diamond sword found`);
           }
         }
-      }, 2000);
+      }, 100);
     }
 
   hitPiglin(bot, farmName) { // Receive farm name
@@ -105,6 +108,29 @@ class FarmManager {
         console.log(`[${bot.username}] No zombie piglins found, turning right`);
       }
     }, 2000);
+  }
+  raidFarmKilling(bot) {
+    console.log(`[${bot.username}] Starting raid farm duty`);
+    setInterval(() => {
+      // Check for best weapon (assuming sword is best)
+      const sword = bot.inventory.items().find(item => item.name.includes('netherite_sword') || item.name.includes('diamond_sword'));
+
+      if (sword) {
+        bot.equip(sword, 'hand');
+      } else {
+        console.log(`[${bot.username}] No Netherite or Diamond sword found`);
+      }
+
+      const raidEntities = bot.getEntities({
+        maxDistance: 16, // Adjust radius as needed
+        filter: entity => entity.name === 'pillager' || entity.name === 'vindicator' || entity.name === 'evoker' || entity.name === 'witch' || entity.name === 'ravager' //Added ravager
+      });
+
+      raidEntities.forEach(entity => {
+        bot.attack(entity);
+        console.log(`[${bot.username}] Attacking ${entity.name}`);
+      });
+    }, 100); // Reduced interval for faster attacking
   }
 }
 

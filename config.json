@@ -2,11 +2,15 @@
   "serverAddress": "mallulifesteal.fun",
   "port": 25565,
   "version": "1.20.1",
-  "whitelist": ["__Lnzz__", "hollowknight", "Susdog","SusPoocha"],
+  "whitelist": ["__Lnzz__", "hollowkight", "Susdog","SusPoocha"],
   "commandPassword": "malare",
   "accounts": [
     {
       "username": "Sibin1",
+      "password": "poocha"
+    },
+    {
+      "username": "mac_zx",
       "password": "poocha"
     },
     {
@@ -30,7 +34,7 @@
       "password": "poocha"
     },
     {
-      "username": "hollowknight",
+      "username": "hollowkight",
       "password": "poocha"
     },    {
       "username": "Susdog",
@@ -47,10 +51,10 @@
     },
     {
       "name": "Skull Farm",
-      "bots": ["iDakaii","hollowknight"],
+      "bots": ["iDakaii","hollowkight"],
       "duties": {
         "iDakaii": [],
-        "hollowknight": ["hitWitherSkeleton"]
+        "hollowkight": ["hitWitherSkeleton"]
       }
     },
     {
@@ -73,6 +77,20 @@
       "bots": ["Doc"],
       "duties": {
         "Doc": []
+      }
+    },
+    {
+      "name": "Pillager Farm",
+      "bots": ["Doc"],
+      "duties": {
+        "Doc": []
+      }
+    },
+    {
+      "name": "Raid Farm",
+      "bots": ["mac_zx"],
+      "duties": {
+        "mac_zx": ["raidfarm"]
       }
     }
   ]
