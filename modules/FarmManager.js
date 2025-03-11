@@ -93,7 +93,7 @@ class FarmManager {
             console.log(`[${bot.username}] No Netherite or Diamond sword found`);
           }
         }
-      }, 100);
+      }, 1500);
     }
 
   hitPiglin(bot, farmName) { // Receive farm name
