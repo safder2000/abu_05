@@ -54,7 +54,7 @@
       "bots": ["iDakaii","hollowknight"],
       "duties": {
         "iDakaii": [],
-        "hollowkight": ["hitWitherSkeleton"]
+        "hollowknight": ["hitWitherSkeleton"]
       }
     },
     {
