@@ -51,7 +51,7 @@
     },
     {
       "name": "Skull Farm",
-      "bots": ["iDakaii","hollowkight"],
+      "bots": ["iDakaii","hollowknight"],
       "duties": {
         "iDakaii": [],
         "hollowkight": ["hitWitherSkeleton"]
