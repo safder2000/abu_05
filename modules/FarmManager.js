@@ -40,8 +40,11 @@ class FarmManager {
           this.hitGhast(bot);
           break;
         case 'raidfarm':
-            this.raidFarmKilling(bot);
-            break;
+          this.raidFarmKilling(bot);
+          break;
+        case 'drinkOminousPotion':
+          this.drinkOminousPotion(bot);
+          break;
         default:
           console.log(`Unknown duty: ${duty}`);
       }
@@ -93,7 +96,7 @@ class FarmManager {
             console.log(`[${bot.username}] No Netherite or Diamond sword found`);
           }
         }
-      }, 1500);
+      }, 100);
     }
 
   hitPiglin(bot, farmName) { // Receive farm name
@@ -111,7 +114,7 @@ class FarmManager {
   }
   raidFarmKilling(bot) {
     console.log(`[${bot.username}] Starting raid farm duty`);
-    setInterval(() => {
+    const raidFarmInterval = setInterval(() => {
       // Check for best weapon (assuming sword is best)
       const sword = bot.inventory.items().find(item => item.name.includes('netherite_sword') || item.name.includes('diamond_sword'));
 
@@ -130,8 +133,34 @@ class FarmManager {
         bot.attack(entity);
         console.log(`[${bot.username}] Attacking ${entity.name}`);
       });
-    }, 100); // Reduced interval for faster attacking
+    }, 5000); // Reduced interval for faster attacking
   }
+
+  drinkOminousPotion(bot) {
+    console.log(`[${bot.username}] Starting drinkOminousPotion duty`);
+    setInterval(() => {
+      const ominousPotion = bot.inventory.items().find(item => {
+        if (item && item.nbt && item.nbt.value && item.nbt.value['VB|Protocol1_20_5To1_20_3'] && item.nbt.value['VB|Protocol1_20_5To1_20_3'].value && item.nbt.value['VB|Protocol1_20_5To1_20_3'].value['VV|custom_data'] && item.nbt.value['VB|Protocol1_20_5To1_20_3'].value['VV|custom_data'].value === 1) {
+          return item;
+        }
+        return null;
+      });
+  
+      if (ominousPotion) {
+        bot.equip(ominousPotion, 'hand')
+          .then(() => bot.activateItem())
+          .then(() => {
+            console.log(`[${bot.username}] Drank ominous potion`);
+          })
+          .catch(err => {
+            console.error(`[${bot.username}] Error drinking ominous potion: ${err}`);
+          });
+      } else {
+        console.log(`[${bot.username}] No ominous potion found in inventory`);
+      }
+    }, 130000); 
+  }
+
 }
 
 module.exports = FarmManager;

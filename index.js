@@ -2,6 +2,8 @@ const fs = require('fs');
 const readline = require('readline');
 const ConnectionManager = require('./core/ConnectionManager');
 const CacheManager = require('./core/CacheManager');
+const { spawnBots } = require('./botManager');
+require('dotenv').config();
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -12,59 +14,6 @@ const cacheManager = new CacheManager();
 
 // Promise wrapper for readline question
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
-
-async function spawnBots(config) {
-  try {
-    const serverAddress = await question('Enter server address (1 for mallulifesteal.fun, 2 for arjunmpanarchy.in): ');
-    let host = config.serverAddress;
-    if (serverAddress === '1') {
-      host = 'mallulifesteal.fun';
-    } else if (serverAddress === '2') {
-      host = 'arjunmpanarchy.in';
-    } else {
-      console.error('Invalid server address.');
-      return;
-    }
-
-    const numBots = parseInt(await question('Enter the number of bots to spawn: '));
-    if (isNaN(numBots) || numBots <= 0) {
-      console.error('Invalid number of bots.');
-      return;
-    }
-
-    const botDetails = [];
-    for (let i = 0; i < numBots; i++) {
-      console.log(`\n=== Bot ${i + 1} Configuration ===`);
-      const username = await question('Enter bot username: ');
-      const password = await question('Enter bot password: ');
-      botDetails.push({ username, password });
-    }
-
-    console.log('\n=== Starting Bots ===');
-    for (const botDetail of botDetails) {
-      console.log(`\nStarting bot ${botDetail.username}...`);
-
-      const connectionManager = new ConnectionManager({
-        host: host,
-        port: config.port,
-        version: config.version,
-        username: botDetail.username,
-        password: botDetail.password,
-        farms: [] // No farms selected
-      });
-
-      // Connect the bot
-      connectionManager.connect();
-
-      // Wait for 5 seconds before starting the next bot to prevent server overload
-      await new Promise(resolve => setTimeout(resolve, 5000));
-    }
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
 
 async function startBots() {
   try {
@@ -79,8 +28,8 @@ async function startBots() {
         console.log(`Reconnecting bot ${botData.username}...`);
         const connectionManager = new ConnectionManager({
           host: botData.serverAddress,
-          port: config.port, // Assuming port is stored in config.json
-          version: config.version, // Assuming version is stored in config.json
+          port: process.env.PORT,
+          version: process.env.VERSION,
           username: botData.username,
           authMethod: botData.authMethod,
           farms: botData.farm ? [config.farms.find(farm => farm.name === botData.farm)] : [] // Find farm object by name
@@ -98,7 +47,7 @@ async function startBots() {
     const option = await question('Choose an option (1 or 2): ');
 
     if (option === '1') {
-          // Farm Selection
+      // Farm Selection
       console.log('\n=== Farm Selection ===');
       if (!config.farms || config.farms.length === 0) {
         console.log('No farms configured. Please add farms to config.json.');

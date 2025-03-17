@@ -35,13 +35,12 @@ class ConnectionManager {
     this.cacheManager = new CacheManager();
     this.bot = null;
     this.options = {
-      host: options.host || 'mallulifesteal.fun',
-      port: 25565,
-      version: '1.20.1',
+      host: options.host || process.env.SERVER_ADDRESS,
+      port: process.env.PORT,
+      version: process.env.VERSION,
       ...options, // Spread operator to merge provided options
     };
-    this.farmManagers = options.farms ? options.farms.map(farm => new FarmManager(null, [farm])) : [];
-    
+    this.farmManagers = options.farms ? options.farms.map(farm => new FarmManager(null, [farm])) : [];    
     // Message history for duplicate filtering
     this.messageHistory = [];
     this.messageHistorySize = 20; // Store last 20 messages
@@ -50,11 +49,11 @@ class ConnectionManager {
     try {
       const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
       this.whitelist = config.whitelist || [];
-      this.commandPassword = config.commandPassword || 'poocha';
+      this.commandPassword = process.env.COMMAND_PASSWORD;
     } catch (error) {
       console.error('Error loading config for command handling:', error);
       this.whitelist = [];
-      this.commandPassword = 'poocha';
+      this.commandPassword = process.env.COMMAND_PASSWORD;
     }
 
     this.loadExternalWhitelist();
@@ -119,9 +118,7 @@ class ConnectionManager {
       this.cacheManager.addBot({
         username: this.options.username,
         serverAddress: this.options.host,
-        authMethod: this.options.authMethod || 'mojang', // Assuming default auth is mojang
-        state: 'running',
-        farm: null // Initially not assigned to any farm
+        authMethod: this.options.authMethod || 'mojang'
       });
     });
 
@@ -314,12 +311,12 @@ class ConnectionManager {
         try {
           this.bot.pathfinder.setGoal(goal);
         } catch (err) {
-          console.error(`[${this.options.username}] Error setting goal: ${err}`);
+          console.error(`[this.options.username] Error setting goal: ${err}`);
           this.bot.chat('Error setting follow goal.');
         }
         break;
       default:
-        console.log(`[${this.options.username}] Unknown command: ${command}`);
+        console.log(`[this.options.username] Unknown command: ${command}`);
         break;
     }
   }
@@ -333,8 +330,8 @@ class ConnectionManager {
   
   // Helper method to log messages with color coding
   logMessage(type, message) {
-    const prefix = `[${this.options.username}]`;
-    const fullMessage = `${prefix} ${message}`;
+    const prefix = `[this.options.username]`;
+    const fullMessage = `[prefix} {message}`;
     
     // Check if this is a chat or system message that might be duplicated across bots
     if (type === 'chat' || type === 'system') {
@@ -376,7 +373,7 @@ class ConnectionManager {
   // Check if a message is a duplicate in the bot's local history
   isDuplicateMessage(message) {
     // First check global history for chat and system messages
-    const fullMessage = `[${this.options.username}] ${message}`;
+    const fullMessage = `[this.options.username] {message}`;
     if (message.startsWith('Chat message from') || message.startsWith('System Message:')) {
       return isGlobalDuplicateMessage(fullMessage);
     }
@@ -406,11 +403,11 @@ class ConnectionManager {
   // Log the bot's position
   logPosition() {
     const { x, y, z } = this.bot.entity.position;
-    this.logMessage('system', `Position: (${x.toFixed(2)}, ${y.toFixed(2)}, ${z.toFixed(2)})`);
+    this.logMessage('system', `Position: ({x.toFixed(2)}, {y.toFixed(2)}, {z.toFixed(2)})`);
   }
 
   async walkToCoordinates(x, y, z) {
-    this.logMessage('system', `Walking to: (${x}, ${y}, ${z})`);
+    this.logMessage('system', `Walking to: ({x}, {y}, {z})`);
     this.logPosition(); // Log position when movement starts
     const mcData = require('minecraft-data')(this.bot.version);
     const movements = new Movements(this.bot, mcData);
@@ -421,9 +418,9 @@ class ConnectionManager {
     // Monitor the movement
     try {
       await this.bot.pathfinder.goto(goal);
-      this.logMessage('system', `Reached target coordinates: (${x}, ${y}, ${z})`);
+      this.logMessage('system', `Reached target coordinates: ({x}, {y}, {z})`);
     } catch (error) {
-      this.logMessage('error', `Error during pathfinding: ${error}`);
+      this.logMessage('error', `Error during pathfinding: {error}`);
       this.bot.chat("I couldn't reach the destination.");
     }
   }

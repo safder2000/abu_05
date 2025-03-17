@@ -2,9 +2,13 @@
   "serverAddress": "mallulifesteal.fun",
   "port": 25565,
   "version": "1.20.1",
-  "whitelist": ["__Lnzz__", "hollowkight", "Susdog","SusPoocha"],
+  "whitelist": ["__Lnzz__", "hollowknight", "Susdog","SusPoocha"],
   "commandPassword": "malare",
   "accounts": [
+    {
+      "username": "Blockyy",
+      "password": "poocha"
+    },
     {
       "username": "Sibin1",
       "password": "poocha"
@@ -80,17 +84,11 @@
       }
     },
     {
-      "name": "Pillager Farm",
-      "bots": ["Doc"],
-      "duties": {
-        "Doc": []
-      }
-    },
-    {
       "name": "Raid Farm",
-      "bots": ["mac_zx"],
+      "bots": ["mac_zx","Blockyy"],
       "duties": {
-        "mac_zx": ["raidfarm"]
+        "mac_zx": ["raidfarm"],
+        "Blockyy": ["drinkOminousPotion"]
       }
     }
   ]
