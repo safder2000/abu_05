@@ -49,6 +49,7 @@
     {
       "name": "Gold Farm",
       "bots": ["Susdog"],
+      "allowTeleport": true,
       "duties": {
         "Susdog": ["hitPiglin","jump"]
       }
@@ -56,6 +57,7 @@
     {
       "name": "Skull Farm",
       "bots": ["iDakaii","hollowknight"],
+      "allowTeleport": true,
       "duties": {
         "iDakaii": [],
         "hollowknight": ["hitWitherSkeleton"]
@@ -64,14 +66,16 @@
     {
       "name": "Ghast Farm",
       "bots": ["Jack","Jude"],
+      "allowTeleport": true,
       "duties": {
-        "Jack": ["hitWitherSkeleton"],
+        "Jack": ["hitGhast"],
         "Jude": []
       }
     },
     {
       "name": "Iron Farm",
       "bots": ["Sibin1"],
+      "allowTeleport": true,
       "duties": {
         "Sibin1": []
       }
@@ -79,6 +83,7 @@
     {
       "name": "Pillager Farm",
       "bots": ["Doc"],
+      "allowTeleport": true,
       "duties": {
         "Doc": []
       }
@@ -86,6 +91,7 @@
     {
       "name": "Raid Farm",
       "bots": ["mac_zx","Blockyy"],
+      "allowTeleport": true,
       "duties": {
         "mac_zx": ["raidfarm"],
         "Blockyy": ["drinkOminousPotion"]
