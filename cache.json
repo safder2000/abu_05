@@ -1,0 +1,41 @@
+{
+  "bots": [
+    {
+      "username": "Susdog",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "farm": "Gold Farm"
+    },
+    {
+      "username": "iDakaii",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "farm": "Skull Farm"
+    },
+    {
+      "username": "hollowknight",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "farm": "Skull Farm"
+    },
+    {
+      "username": "Jack",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "farm": "Ghast Farm"
+    },
+    {
+      "username": "Jude",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "farm": "Ghast Farm"
+    },
+    {
+      "username": "Sibin1",
+      "serverAddress": "mallulifesteal.fun",
+      "authMethod": "mojang",
+      "farm": "Iron Farm"
+    }
+  ],
+  "farms": []
+}

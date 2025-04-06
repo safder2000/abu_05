@@ -1,19 +1,11 @@
 const axios = require("axios");
-const secureConfig = require("./SecureConfig");
+require("dotenv").config();
 
 class DiscordWebhook {
   constructor() {
+    this.webhookUrl = process.env.WEBHOOK_URL;
     this.cooldowns = new Map(); // Track message cooldowns to prevent spam
     this.cooldownTime = 30000; // 30 seconds cooldown for similar messages
-  }
-
-  /**
-   * Get the webhook URL from secure configuration
-   * @returns {string|null} The webhook URL or null if not configured
-   */
-  getWebhookUrl() {
-    // Use the obscured name 'notificationEndpoint' instead of 'webhookUrl'
-    return secureConfig.get("notificationEndpoint");
   }
 
   /**
@@ -25,14 +17,8 @@ class DiscordWebhook {
    * @returns {Promise}
    */
   async send(content, title = null, color = "7289DA", fields = []) {
-    // Check if notifications are enabled
-    if (!secureConfig.get("notificationsEnabled", false)) {
-      return;
-    }
-
-    const webhookUrl = this.getWebhookUrl();
-    if (!webhookUrl) {
-      console.log("Notification endpoint not configured");
+    if (!this.webhookUrl) {
+      console.log("Discord webhook URL not configured");
       return;
     }
 
@@ -73,7 +59,7 @@ class DiscordWebhook {
         ];
       }
 
-      await axios.post(webhookUrl, payload);
+      await axios.post(this.webhookUrl, payload);
     } catch (error) {
       console.error("Error sending Discord webhook:", error.message);
     }

@@ -4,7 +4,7 @@ const ConnectionManager = require("./core/ConnectionManager");
 const CacheManager = require("./core/CacheManager");
 const { spawnBots, setReadlineInterface } = require("./botManager");
 const updateChecker = require("./utils/UpdateChecker");
-const secureConfig = require("./utils/SecureConfig");
+require("dotenv").config();
 
 // Display version information
 const packageJson = require("./package.json");
@@ -35,13 +35,6 @@ const question = (query) =>
 
 async function startBots() {
   try {
-    // Check if secure configuration is set up
-    if (!secureConfig.has("serverAddress")) {
-      console.log("\nFirst-time setup detected. Running setup wizard...");
-      await secureConfig.runSetupWizard();
-      console.log("\nSetup complete! Starting bot...");
-    }
-
     // Start periodic update checks
     updateChecker.startPeriodicChecks();
 

@@ -23,8 +23,8 @@ const FarmManager = require("../modules/FarmManager");
 const CacheManager = require("./CacheManager");
 const botRegistry = require("../utils/BotRegistry");
 const discordWebhook = require("../utils/DiscordWebhook");
-const secureConfig = require("../utils/SecureConfig");
 const fs = require("fs");
+require("dotenv").config();
 
 // Centralized message management system
 class MessageManager {
@@ -124,9 +124,9 @@ class ConnectionManager {
     this.cacheManager = new CacheManager();
     this.bot = null;
     this.options = {
-      host: options.host || secureConfig.get("serverAddress"),
-      port: secureConfig.get("serverPort", "25565"),
-      version: secureConfig.get("gameVersion", "1.20.1"),
+      host: options.host || process.env.SERVER_ADDRESS,
+      port: process.env.PORT,
+      version: process.env.VERSION,
       ...options, // Spread operator to merge provided options
     };
     this.farmManagers = options.farms
@@ -385,7 +385,7 @@ class ConnectionManager {
     const password = args[args.length - 1]; // Get the password from the end of the command
     const isWhitelisted = this.whitelist.includes(strippedUsername) ||
       this.externalWhitelist.includes(strippedUsername);
-    const hasCorrectPassword = password === secureConfig.get("commandPassword");
+    const hasCorrectPassword = password === this.commandPassword;
 
     // Check if the bot is on farm duty and if teleport is allowed
     const currentFarm = this.options.farms &&
@@ -413,14 +413,6 @@ class ConnectionManager {
       );
       // Inform the user that they are not authorized
       this.bot.whisper(username, "You are not authorized to control this bot.");
-
-      // Send security alert to Discord
-      discordWebhook.send(
-        `Unauthorized command attempt from ${username}`,
-        "Security Alert",
-        "FF0000",
-      );
-
       return;
     }
 
@@ -480,7 +472,7 @@ class ConnectionManager {
           break;
         }
 
-        const target = this.bot.players[username]?.entity;
+        const target = this.bot.getEntity(username);
         if (!target) {
           this.bot.chat("I can't see you");
           break;

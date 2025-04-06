@@ -30,18 +30,16 @@ A Minecraft bot manager for automating farm tasks.
 
 ## Configuration
 
-1. **First-time Setup Wizard**:
-   - When you run the bot for the first time, a setup wizard will guide you through the configuration process
-   - You'll be asked to enter your Minecraft server address, port, version, and other settings
-   - Sensitive information like passwords and webhook URLs are stored securely
+1. Create a `.env` file in the root directory with the following content:
+   ```
+   SERVER_ADDRESS=your_minecraft_server_address
+   PORT=25565
+   VERSION=1.20.1
+   COMMAND_PASSWORD=your_command_password
+   WEBHOOK_URL=your_discord_webhook_url
+   ```
 
-2. **Manual Configuration**:
-   - Edit the `config.json` file to configure your farms and bots
-   - Sensitive configuration is stored in `secure_config.json` (this file should not be shared)
-
-3. **Security Features**:
-   - Sensitive information is encrypted using machine-specific keys
-   - Discord webhook URLs and command passwords are protected from casual inspection
+2. Edit the `config.json` file to configure your farms and bots.
 
 ## Usage
 
