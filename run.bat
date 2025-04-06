@@ -1,8 +1,4 @@
-@echo off
-echo ===================================
-echo Abu Bot Launcher
-echo ===================================
-echo.
+
 
 REM Check if Node.js is installed
 where node >nul 2>nul

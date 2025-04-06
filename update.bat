@@ -1,6 +1,6 @@
 @echo off
 echo ===================================
-echo Abu Bot Updater
+echo Abu Updater
 echo ===================================
 echo.
 
